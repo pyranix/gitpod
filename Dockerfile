@@ -8,6 +8,13 @@ USER root
 RUN pacman -Syu --noconfirm && \
     pacman -S --noconfirm sudo base-devel clang lldb llvm fish git binutils ncurses libelf openssl perl rsync tar xz zstd
 
+# Add multilib mirror to pacman configuration
+RUN echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
+    sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist
+
+# Update pacman and sync multilib repository
+RUN pacman -Sy --noconfirm && pacman -Syyu --noconfirm
+
 # sudo hax
 RUN useradd -l -u 33333 -G wheel -md /home/gitpod -s /usr/bin/fish -p gitpod gitpod \
     && sed -i.bkp -e 's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers \
