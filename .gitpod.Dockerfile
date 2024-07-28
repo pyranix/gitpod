@@ -9,21 +9,34 @@ RUN pacman -Syu --noconfirm \
     vim \
     sudo \
     bash-completion \
+    fish \
+    bc \
+    bison \
+    ccache \
+    clang \
+    cpio \
+    cmake \
+    flex \
+    libelf \
+    lld \
+    llvm \
+    ninja \
+    openssl \
+    python3 \
+    uboot-tools \
     && pacman -Scc --noconfirm
 
 # Create the gitpod group with the required GID
 RUN groupadd -g 33333 gitpod \
-    && useradd -m -u 33333 -g gitpod -s /bin/bash gitpod \
+    && useradd -m -u 33333 -g gitpod -s /usr/bin/fish gitpod \
     && echo 'gitpod ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/gitpod \
     && chmod 0440 /etc/sudoers.d/gitpod
 
 USER gitpod
 WORKDIR /workspace
 
-# Optional: Install additional tools or dependencies here
-
 # Expose any ports if needed
 EXPOSE 3000
 
 # Define default command (if necessary)
-CMD ["/bin/bash"]
+CMD ["/usr/bin/fish"]
