@@ -1,2 +1,17 @@
 image:
-  file: Dockerfile
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: Build and Run
+    command: |
+      echo "Welcome to your Arch Linux environment on Gitpod!"
+      # You can add commands to build or start your application here
+
+vscode:
+  extensions:
+    - ms-vscode.cpptools
+    - ms-python.python
+
+ports:
+  - port: 3000
+    onOpen: open-preview
