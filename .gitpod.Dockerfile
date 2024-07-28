@@ -13,7 +13,7 @@ RUN pacman -Syu --noconfirm \
 
 # Create the gitpod group with the required GID
 RUN groupadd -g 33333 gitpod \
-    && useradd -m -u 1000 -g gitpod -s /bin/bash gitpod \
+    && useradd -m -u 33333 -g gitpod -s /bin/bash gitpod \
     && echo 'gitpod ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/gitpod \
     && chmod 0440 /etc/sudoers.d/gitpod
 
