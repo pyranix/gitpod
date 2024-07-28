@@ -1,33 +1,28 @@
-# Use the Arch Linux base image
+# Use Arch Linux as the base image
 FROM archlinux:latest
 
-# Switch to root user for system updates
-USER root
+# Update the system and install necessary packages
+RUN pacman -Syu --noconfirm \
+    && pacman -S --noconfirm \
+    base-devel \
+    git \
+    vim \
+    sudo \
+    bash-completion \
+    && pacman -Scc --noconfirm
 
-# Combine system updates, installation, and user setup in one RUN command
-RUN pacman -Syu --noconfirm && \
-    pacman -S --noconfirm sudo base-devel clang lldb llvm fish git binutils ncurses libelf openssl perl rsync tar xz zstd
+# Set up a user and grant permissions
+RUN useradd -m gitpod \
+    && echo 'gitpod ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/gitpod \
+    && chmod 0440 /etc/sudoers.d/gitpod
 
-# Add multilib mirror to pacman configuration
-RUN echo -e "[multilib]\nInclude = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf && \
-    sed -i 's/^#Server/Server/' /etc/pacman.d/mirrorlist
+USER gitpod
+WORKDIR /workspace
 
-# Update pacman and sync multilib repository
-RUN pacman -Sy --noconfirm && pacman -Syyu --noconfirm
+# Optional: Install additional tools or dependencies here
 
-# sudo hax
-RUN useradd -l -u 33333 -G wheel -md /home/gitpod -s /usr/bin/fish -p gitpod gitpod \
-    && sed -i.bkp -e 's/%sudo\s\+ALL=(ALL\(:ALL\)\?)\s\+ALL/%sudo ALL=NOPASSWD:ALL/g' /etc/sudoers \
-    && chmod 0440 /etc/sudoers
+# Expose any ports if needed
+EXPOSE 3000
 
-# shell cmd
-SHELL ["fish", "--command"]
-
-# set shell use fish
-RUN chsh -s /usr/bin/fish
-
-# env fish
-ENV SHELL /usr/bin/fish
-
-# entrypoint
-ENTRYPOINT [ "fish" ]
+# Define default command (if necessary)
+CMD ["/bin/bash"]
