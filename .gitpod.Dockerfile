@@ -1,10 +1,10 @@
-# Use Arch Linux as the base image
-FROM archlinux:latest
+# Use Debian as the base image
+FROM debian:latest
 
 # Update the system and install necessary packages
-RUN pacman -Syu --noconfirm \
-    && pacman -S --noconfirm \
-    base-devel \
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y \
+    build-essential \
     git \
     vim \
     sudo \
@@ -17,14 +17,14 @@ RUN pacman -Syu --noconfirm \
     cpio \
     cmake \
     flex \
-    libelf \
+    libelf-dev \
     lld \
     llvm \
-    ninja \
+    ninja-build \
     openssl \
     python3 \
-    uboot-tools \
-    && pacman -Scc --noconfirm
+    u-boot-tools \
+    && apt-get clean
 
 # Create the gitpod group with the required GID
 RUN groupadd -g 33333 gitpod \
@@ -36,7 +36,7 @@ USER gitpod
 WORKDIR /workspace
 
 # Expose any ports if needed
-EXPOSE 3000
+EXPOSE 22
 
 # Define default command (if necessary)
 CMD ["/usr/bin/fish"]
